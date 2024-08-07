@@ -17,26 +17,11 @@ public class Cart extends BaseEntity{
 	private BigDecimal price;
 	
 @ManyToOne
-@JoinColumn(name="item_id")
+@JoinColumn(name="item_id",nullable=false)
 	private Item item;
 @ManyToOne
-@JoinColumn(name="user_id")
+@JoinColumn(name="user_id",nullable=false)
 	private User user;
-
-
-public Cart() {
-	
-}
-
-
-
-public Cart(int qty, BigDecimal price, Item item, User user) {
-	super();
-	this.qty = qty;
-	this.price = price;
-	this.item = item;
-	this.user = user;
-}
 public int getQty() {
 	return qty;
 }
@@ -65,7 +50,9 @@ public void setUser(User user) {
 public String toString() {
 	return "Cart [qty=" + qty + ", price=" + price + ", item=" + item + ", user=" + user + "]";
 }
-	
+
+
+
 	
 	
 	

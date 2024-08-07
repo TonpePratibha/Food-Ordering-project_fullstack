@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -29,7 +30,7 @@ private BigDecimal price;
 private FoodType type;
 
 //oner directional manyitems in one restaute 
-@ManyToOne
+@ManyToOne(fetch=FetchType.LAZY)
 @JoinColumn(name="restaurentid" ,nullable=false)
 private Restaurent restaurent;
 

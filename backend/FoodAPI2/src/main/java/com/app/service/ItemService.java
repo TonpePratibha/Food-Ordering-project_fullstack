@@ -1,6 +1,7 @@
 package com.app.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.app.dto.ItemDTO;
 import com.app.entities.Item;
@@ -8,6 +9,10 @@ import com.app.entities.Item;
 
 
 public interface ItemService {
-       // Item AddItem(Item item,Long restaurentId);
+   
         List<ItemDTO> getItems();
+        void deleteItem(Long id);
+        Item updateItem(Long id, Item itemDetails);
+        Item createItem(Long restaurantId, Item item);
+        Optional<Item> getItemById(Long id);
 }
