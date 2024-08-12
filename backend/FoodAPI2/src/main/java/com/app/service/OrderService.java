@@ -1,12 +1,14 @@
 package com.app.service;
 
+import java.util.Optional;
+
 import com.app.dto.OrderDTO;
 
 public interface OrderService {
 
 	OrderDTO createOrder(OrderDTO orderDTO);
 
-	OrderDTO getOrderById(Long id);
+	Optional<OrderDTO> getOrderById(Long id);
 
 
 

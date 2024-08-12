@@ -1,5 +1,7 @@
 package com.app.service;
 
+import java.util.Optional;
+
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
@@ -34,12 +36,18 @@ public class OrderServiceImpl implements OrderService{
 	        return convertToDTO(savedOrder);
 	    }
 
+//	    @Override
+//	    public OrderDTO getOrderById(Long id) {
+//	        Order order = orderRepository.findById(id)
+//	            .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+//	        return convertToDTO(order);
+//	    }
 	    @Override
-	    public OrderDTO getOrderById(Long id) {
-	        Order order = orderRepository.findById(id)
-	            .orElseThrow(() -> new EntityNotFoundException("Order not found"));
-	        return convertToDTO(order);
+	    public Optional<OrderDTO> getOrderById(Long id) {
+	        return orderRepository.findById(id)
+	                .map(this::convertToDTO);  // convertToDTO should handle the conversion from Order to OrderDTO
 	    }
+
 
 	    @Override
 	    public OrderDTO updateOrder(Long id, OrderDTO orderDTO) {
@@ -47,7 +55,7 @@ public class OrderServiceImpl implements OrderService{
 	            .orElseThrow(() -> new EntityNotFoundException("Order not found"));
 	        existingOrder.setOrderdate(orderDTO.getOrderdate());
 	        existingOrder.setTotalprice(orderDTO.getTotalprice());
-	        existingOrder.setStatus(Status.valueOf(orderDTO.getStatus()));
+	        existingOrder.setStatus(Status.valueOf(orderDTO.getStatus().toUpperCase()));
 	        existingOrder.setQty(orderDTO.getQty());
 
 	        User user = userRepository.findById(orderDTO.getUserId())
@@ -86,7 +94,7 @@ public class OrderServiceImpl implements OrderService{
 	        order.setId(orderDTO.getId());
 	        order.setOrderdate(orderDTO.getOrderdate());
 	        order.setTotalprice(orderDTO.getTotalprice());
-	        order.setStatus(Status.valueOf(orderDTO.getStatus()));
+	        order.setStatus(Status.valueOf(orderDTO.getStatus().toUpperCase()));
 	        order.setQty(orderDTO.getQty());
 
 	        User user = userRepository.findById(orderDTO.getUserId())
@@ -99,5 +107,5 @@ public class OrderServiceImpl implements OrderService{
 
 	        return order;
 	    }
-
+         
 }

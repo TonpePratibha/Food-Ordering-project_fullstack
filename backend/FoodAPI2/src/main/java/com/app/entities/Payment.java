@@ -2,43 +2,52 @@ package com.app.entities;
 
 import java.math.BigDecimal;
 import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+
+
 @Entity
 @Table(name="Payments")
 public class Payment extends BaseEntity {
 	
 @Column(nullable=false)
-	private Timestamp paymentDate;
+	private LocalDateTime paymentDate;
 
 @Column(nullable=false)
 	private BigDecimal amount;
 	
 @Enumerated(EnumType.STRING)
-@Column(name="payment_status",nullable=false)
+@Column(name="payment_status")
 private Status status;
 	
 @Column(name="card_number",nullable=false)
 private Long cardnum;
-	
-	@OneToOne
+	@JsonIgnore
+@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="order_id")
 private Order orders;
-	
-	@OneToOne
+	@JsonIgnore
+	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="user_id")
 	private User user;
 	
 	public Payment() {}
 
-	public Payment(Timestamp paymentDate, BigDecimal amount, Status status, Long cardnum, Order orders, User user) {
+	
+	
+	public Payment(LocalDateTime paymentDate, BigDecimal amount, Status status, Long cardnum, Order orders, User user) {
 		super();
 		this.paymentDate = paymentDate;
 		this.amount = amount;
@@ -48,11 +57,13 @@ private Order orders;
 		this.user = user;
 	}
 
-	public Timestamp getPaymentDate() {
+
+
+	public LocalDateTime getPaymentDate() {
 		return paymentDate;
 	}
 
-	public void setPaymentDate(Timestamp paymentDate) {
+	public void setPaymentDate(LocalDateTime paymentDate) {
 		this.paymentDate = paymentDate;
 	}
 
@@ -101,7 +112,7 @@ private Order orders;
 		return "Payment [paymentDate=" + paymentDate + ", amount=" + amount + ", status=" + status + ", cardnum="
 				+ cardnum + ", orders=" + orders + ", user=" + user + "]";
 	}
-	
+
 	
 	
 }

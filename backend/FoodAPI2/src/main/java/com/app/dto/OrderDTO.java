@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.security.Timestamp;
 import java.time.LocalDateTime;
 
+import com.app.entities.Order;
+
 public class OrderDTO extends BaseDTO{
 	 private LocalDateTime orderdate;
 	    private BigDecimal totalprice;
@@ -52,6 +54,7 @@ public class OrderDTO extends BaseDTO{
 			return "OrderDTO [orderdate=" + orderdate + ", totalprice=" + totalprice + ", status=" + status + ", qty="
 					+ qty + ", userId=" + userId + ", restaurentId=" + restaurentId + "]";
 		}
+		
 	    
 		
 }

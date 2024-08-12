@@ -4,10 +4,14 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import com.app.dto.OrderDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="OrderItems")
@@ -19,11 +23,12 @@ public class OrderItems extends BaseEntity{
       @Column(nullable=false)
 	    private BigDecimal price;
 
-	    @ManyToOne
+	    @ManyToOne(fetch=FetchType.LAZY)
 	    @JoinColumn(name = "orderid")
+	    @JsonIgnore
 	    private Order order;
 
-	    @ManyToOne
+	    @ManyToOne(fetch=FetchType.LAZY)
 	    @JoinColumn(name = "itemid")
 	    private Item item;
 	    
@@ -62,9 +67,8 @@ public class OrderItems extends BaseEntity{
 		}
 
 		public void setOrder(Order order) {
-			this.order = order;
+			this.order=order;
 		}
-
 		public Item getItem() {
 			return item;
 		}
@@ -77,6 +81,9 @@ public class OrderItems extends BaseEntity{
 		public String toString() {
 			return "OrderItems [qty=" + qty + ", price=" + price + ", order=" + order + ", item=" + item + "]";
 		}
+
+
+		
 	
 	    
 }

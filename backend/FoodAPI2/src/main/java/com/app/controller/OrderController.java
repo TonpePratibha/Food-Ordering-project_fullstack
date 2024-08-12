@@ -1,5 +1,7 @@
 package com.app.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +30,13 @@ public class OrderController {
         return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id) {
-        OrderDTO orderDTO = orderService.getOrderById(id);
-        return new ResponseEntity<>(orderDTO, HttpStatus.OK);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id) {
+	    Optional<OrderDTO> orderDTO = orderService.getOrderById(id);
+	    return orderDTO.map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
+	                   .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+
 
     @PutMapping("/{id}")
     public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long id, @RequestBody OrderDTO orderDTO) {
