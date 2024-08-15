@@ -15,4 +15,5 @@ public interface ItemService {
         Item updateItem(Long id, Item itemDetails);
         Item createItem(Long restaurantId, Item item);
         Optional<Item> getItemById(Long id);
+        List<Item> getItemsByRestaurentId(Long restaurentId);
 }

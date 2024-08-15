@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="items")
 
@@ -30,6 +32,7 @@ private BigDecimal price;
 private FoodType type;
 
 //oner directional manyitems in one restaute 
+@JsonIgnore
 @ManyToOne(fetch=FetchType.LAZY)
 @JoinColumn(name="restaurentid" ,nullable=false)
 private Restaurent restaurent;

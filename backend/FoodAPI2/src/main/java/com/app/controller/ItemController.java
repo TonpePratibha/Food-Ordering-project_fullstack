@@ -67,7 +67,14 @@ public class ItemController {
 	        return ResponseEntity.noContent().build();
 	    }
 	
-	
+	    @GetMapping("/restaurents/{restaurentId}")
+	    public ResponseEntity<?> getItemsByRestaurantId(@PathVariable Long restaurentId) {
+	        List<Item> items = itemservice.getItemsByRestaurentId(restaurentId);
+	        if (items.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No items found for this restaurant");
+	        }
+	        return ResponseEntity.ok(items);
+	    }
 	
 	
 	

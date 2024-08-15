@@ -1,5 +1,6 @@
 package com.app.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,8 @@ public class RestaurentServiceImpl implements RestaurentService{
 	@Autowired
 	private ModelMapper modelmapper;
 	
+
+
 	  public Restaurent registerRestaurent(RestaurentDTO dto) {
 	        Restaurent restaurent = new Restaurent();
 	        
@@ -36,7 +39,6 @@ public class RestaurentServiceImpl implements RestaurentService{
 
 	        return restroRepository.save(restaurent);
 	    }
-
 
 	  
 	@Override
@@ -83,7 +85,7 @@ public class RestaurentServiceImpl implements RestaurentService{
         restaurent.setAddress(newrestro.getAddress());
         restaurent.setCategory(newrestro.getCategory());
         restaurent.setEmail(newrestro.getEmail());
-        restaurent.setImage(newrestro.getImage());
+       
         restaurent.setMobileno(newrestro.getMobileno());
         restaurent.setPassword(newrestro.getPassword());
         restaurent.setRestaurentname(newrestro.getRestaurentname());
@@ -92,4 +94,5 @@ public class RestaurentServiceImpl implements RestaurentService{
         return restroRepository.save(restaurent);
 	}
 	
+
 }

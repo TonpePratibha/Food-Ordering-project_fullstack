@@ -1,5 +1,7 @@
 package com.app.controller;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,13 +31,16 @@ public class RestaurentController {
 	
      @Autowired
 	private RestaurentService restroservice;
-	
+     
      @PostMapping("/register")
-	public ResponseEntity<Restaurent> registerRestaurent(@RequestBody RestaurentDTO rdto){
-     {
-    Restaurent registeredRestaurent=restroservice.registerRestaurent(rdto)	;
-    return ResponseEntity.status(HttpStatus.CREATED).body(registeredRestaurent);
-     }}
+ 	public ResponseEntity<Restaurent> registerRestaurent(@RequestBody RestaurentDTO rdto){
+      {
+     Restaurent registeredRestaurent=restroservice.registerRestaurent(rdto)	;
+     return ResponseEntity.status(HttpStatus.CREATED).body(registeredRestaurent);
+      }}
+     
+     
+
      
     
      @PostMapping("/signin")
@@ -74,7 +80,9 @@ public class RestaurentController {
          Restaurent updatedRestaurant = restroservice.updateRestaurant(rid, restaurantDetails);
          return ResponseEntity.ok(updatedRestaurant);
      }
-     
+
+
+    
 }
      
      

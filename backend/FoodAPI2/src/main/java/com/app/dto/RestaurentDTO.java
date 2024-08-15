@@ -1,5 +1,7 @@
 package com.app.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.app.entities.Category;
 
 public class RestaurentDTO  extends BaseDTO{
@@ -9,7 +11,9 @@ public class RestaurentDTO  extends BaseDTO{
 	    private String mobileno;
 	    private Category category;
 	    private String password;
+	   
 	    
+		
 		public String getRestaurentname() {
 			return Restaurentname;
 		}
@@ -48,9 +52,11 @@ public class RestaurentDTO  extends BaseDTO{
 		}
 		@Override
 		public String toString() {
-			return "RestaurentDTO [restaurentname=" + Restaurentname + ", email=" + email + ", address=" + address
-					+ ", mobileno=" + mobileno + ", category=" + category + ", password=" + password + "]";
+			return "RestaurentDTO [Restaurentname=" + Restaurentname + ", email=" + email + ", address=" + address
+					+ ", mobileno=" + mobileno + ", category=" + category + ", password=" + password + ", imageFile="
+					 ;
 		}
+		
 	    
 	   
 	    

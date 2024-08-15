@@ -55,22 +55,7 @@ public class ItemServiceImpl implements ItemService{
 
    
     	
-    	   
-//    	 @Override
-//    	    public Item updateItem(Long id, Item updatedItem) {
-//    	        Optional<Item> optionalItem = itemRepository.findById(id);
-//    	        if (optionalItem.isPresent()) {
-//    	            Item item = optionalItem.get();
-//    	            item.setName(updatedItem.getName());
-//    	            item.setDescription(updatedItem.getDescription());
-//    	            item.setPrice(updatedItem.getPrice());
-//    	            item.setType(updatedItem.getType());
-//    	            item.setRestaurent(updatedItem.getRestaurent());
-//    	            return itemRepository.save(item);
-//    	        } else {
-//    	            return null;// Or throw an exception
-//    	        }
-//    	    }
+   
 
     @Override
     public Item updateItem(Long id, Item updatedItem) {
@@ -97,7 +82,16 @@ public class ItemServiceImpl implements ItemService{
         itemRepository.deleteById(id);
     }
 	
-	
+
+    @Override
+    public List<Item> getItemsByRestaurentId(Long restaurentId) {
+        List<Item> items = itemRepository.findByRestaurentId(restaurentId);
+        if (items.isEmpty()) {
+           
+             throw new RuntimeException("No items found for this restaurant");
+        }
+        return items;
+    }
 	
 	
 	
