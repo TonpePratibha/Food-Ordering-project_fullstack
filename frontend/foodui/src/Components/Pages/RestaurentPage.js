@@ -65,10 +65,22 @@ const RestaurantPage = () => {
     if (!restaurantDetails) {
         return <p>No restaurant details available.</p>;
     }
+    // const handleLogout = () => {
+    //     localStorage.removeItem('userId'); // Clear the user's session
+    //     navigate('/login'); // Redirect to the login page
+    // };
     const handleLogout = () => {
+        // Debugging
+        console.log('Before logout:', localStorage.getItem('userId'));
+        localStorage.removeItem('userRole'); // If you're storing user role here
         localStorage.removeItem('userId'); // Clear the user's session
+    
+        // Verify removal
+        console.log('After logout:', localStorage.getItem('userId'));
+    
         navigate('/login'); // Redirect to the login page
     };
+    
     return (
         <div className="container mt-5">
             <h2 className="text-primary mb-4">Manage Restaurant</h2>

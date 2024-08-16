@@ -26,22 +26,20 @@ const NavBar = () => {
             </div>
 
             <div className='flex items-center space-x-2 lg:space-x-10'>
-                <div>
-                     <IconButton>
+                 <div>
+                     {/* <IconButton>
                         <SearchIcon sx={{ fontSize: '1.5rem' }} />
-                    </IconButton>
+                    </IconButton> */}
                     
  
-<div></div>
+<div> 
+
+</div>
                 </div>
                 <div>
                     <Avatar sx={{ bgcolor: 'white', color: 'red' }} onClick={handleOpen}></Avatar>
                 </div>
-                <div>
-                    <Badge color='black' badgeContent={3}>
-                        <ShoppingCartIcon sx={{ fontSize: '1.5rem' }} />
-                    </Badge>
-                </div>
+               
             </div>
 
             <Modal

@@ -10,5 +10,8 @@ public interface cartService {
 	    CartDTO createCart(CartDTO cartDTO);
 	    CartDTO updateCart(Long id, CartDTO updatedCartDTO);
 	    void deleteCart(Long id);
+		 List<CartDTO> getCartItemsByUserId(Long userId) ;
+			// TODO Auto-generated method stub
+		
 
 }

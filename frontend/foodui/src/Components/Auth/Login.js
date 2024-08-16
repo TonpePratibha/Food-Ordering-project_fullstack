@@ -12,12 +12,52 @@ const Login = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    // const handleLogin = async (event) => {
+    //     event.preventDefault();
+    //     try {
+    //         let response;
+
+    //         // Login based on role
+    //         if (role === 'user') {
+    //             response = await Userservice.loginUser({ email, password });
+    //         } else if (role === 'restaurant') {
+    //             response = await Restaurentservice.loginRestro({ email, password });
+    //         } else if (role === 'admin') {
+    //             response = await Adminservice.loginAdmin({ email, password });
+    //         } else {
+    //             throw new Error('Invalid role selected');
+    //         }
+
+    //         // Check if response contains user/restaurant/admin ID and possibly a token
+    //         if (response && response.id) {
+    //             // Save role and ID in local storage
+    //             localStorage.setItem('userRole', role);
+    //             localStorage.setItem('userId', response.id);
+
+    //             // Redirect based on role
+    //             if (role === 'user') {
+    //                 navigate('/user-dashboard');
+    //             } else if (role === 'restaurant') {
+    //                 navigate('/restaurant-page');
+    //             } else if (role === 'admin') {
+    //                 navigate('/admin-dashboard');
+    //             }
+    //         } else {
+    //             setError('Login failed. Please check your credentials.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Login failed:', error);
+    //         setError('Login failed. Please try again.');
+    //     }
+    // };
+    
+    
+  
     const handleLogin = async (event) => {
         event.preventDefault();
         try {
             let response;
-
-            // Login based on role
+    
             if (role === 'user') {
                 response = await Userservice.loginUser({ email, password });
             } else if (role === 'restaurant') {
@@ -27,21 +67,32 @@ const Login = () => {
             } else {
                 throw new Error('Invalid role selected');
             }
-
-            // Check if response contains user/restaurant/admin ID and possibly a token
-            if (response && response.id) {
-                // Save role and ID in local storage
+    
+            console.log('Login response:', response);
+    
+            if (response && response.data && response.data.id) {
                 localStorage.setItem('userRole', role);
-                localStorage.setItem('userId', response.id);
+                localStorage.setItem('userId', response.data.id);
+                
+                const redirectPath = role === 'user' 
+                    ? '/user-dashboard' 
+                    : role === 'restaurant' 
+                    ? '/restaurant-page' 
+                    : '/admin-dashboard';
+                    
+                console.log('Redirecting to:', redirectPath);
+                navigate(redirectPath);
+
 
                 // Redirect based on role
-                if (role === 'user') {
-                    navigate('/user-dashboard');
-                } else if (role === 'restaurant') {
-                    navigate('/restaurant-page');
-                } else if (role === 'admin') {
-                    navigate('/admin-dashboard');
-                }
+                // if (role === 'user') {
+                //     navigate('/user-dashboard');
+                // } else if (role === 'restaurant') {
+                //     navigate('/restaurant-page');
+                // } else if (role === 'admin') {
+                //     navigate('/admin-dashboard');
+                // }
+
             } else {
                 setError('Login failed. Please check your credentials.');
             }
@@ -50,7 +101,10 @@ const Login = () => {
             setError('Login failed. Please try again.');
         }
     };
-
+    
+    
+    
+    
     return (
         <Box sx={{ maxWidth: 400, mx: 'auto', mt: 5, p: 3, border: '1px solid #ddd', borderRadius: 2, boxShadow: 3 }}>
             <Typography variant="h4" component="h2" gutterBottom>

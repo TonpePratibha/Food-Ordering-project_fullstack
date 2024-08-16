@@ -1,58 +1,54 @@
-
-
 // import React, { useEffect, useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
-// import Itemservice from '../../service/Itemservice';
-// import Cartservice from '../../service/Cartservice';
+// import Cartservice from '../../../service/Cartservice';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
-// const UserPage = () => {
+// const CartPage = () => {
 //     const navigate = useNavigate();
-//     const [items, setItems] = useState([]);
+//     const [cartItems, setCartItems] = useState([]);
 //     const [loading, setLoading] = useState(true);
 //     const [error, setError] = useState('');
-//     const [quantities, setQuantities] = useState({}); // To track quantities for each item
 
 //     const userId = localStorage.getItem('userId');
 //     const userRole = localStorage.getItem('userRole');
 
 //     useEffect(() => {
 //         if (userId && userRole === 'user') {
-//             fetchItems();
+//             fetchCartItems();
 //         } else {
 //             navigate('/login');
 //         }
 //     }, [userId, userRole, navigate]);
 
-//     const fetchItems = async () => {
+//     const fetchCartItems = async () => {
 //         try {
-//             const response = await Itemservice.getAllItems(); 
-//             setItems(response.data); 
+//             const response = await Cartservice.getUserCarts(userId);
+//             setCartItems(response.data);
 //         } catch (error) {
-//             setError('Failed to load items.');
+//             setError('Failed to load cart items.');
 //         } finally {
 //             setLoading(false);
 //         }
 //     };
 
-//     const handleQuantityChange = (itemId, value) => {
-//         setQuantities(prevQuantities => ({
-//             ...prevQuantities,
-//             [itemId]: value
-//         }));
+//     const handleQuantityChange = async (cartId, newQuantity) => {
+//         try {
+//             await Cartservice.updateCart(cartId, { qty: newQuantity });
+//             fetchCartItems(); // Refresh the cart items after update
+//         } catch (error) {
+//             console.error('Error updating cart item:', error.response ? error.response.data : error.message);
+//             setError('Failed to update cart item.');
+//         }
 //     };
 
-//     const addToCart = (itemId) => {
-//         const quantity = quantities[itemId] || 1; // Default to 1 if quantity is not set
-//         Cartservice.addItemToCart(userId, itemId, quantity)
-//             .then(() => {
-//                 // alert("Item added to cart successfully!");
-//                 navigate("/cart")
-//             })
-//             .catch((error) => {
-//                 console.error('Error adding item to cart:', error.response ? error.response.data : error.message);
-//                 setError("Failed to add item to cart.");
-//             });
+//     const removeFromCart = async (cartId) => {
+//         try {
+//             await Cartservice.deleteCart(cartId);
+//             fetchCartItems(); // Refresh the cart items after deletion
+//         } catch (error) {
+//             console.error('Error removing item from cart:', error.response ? error.response.data : error.message);
+//             setError('Failed to remove item from cart.');
+//         }
 //     };
 
 //     const handleLogout = () => {
@@ -67,44 +63,41 @@
 
 //     return (
 //         <div className="container mt-5">
-//             <h2 className="text-primary mb-4">Welcome to the User Dashboard</h2>
+//             <h2 className="text-primary mb-4">Your Cart</h2>
 
 //             {error && <div className="alert alert-danger">{error}</div>}
 
-//             <h3 className="text-secondary">Available Items</h3>
-//             {items.length > 0 ? (
+//             {cartItems.length > 0 ? (
 //                 <table className="table table-striped table-bordered">
 //                     <thead className="thead-dark">
 //                         <tr>
 //                             <th>Item ID</th>
 //                             <th>Item Name</th>
 //                             <th>Price</th>
-//                             <th>Description</th>
-//                             <th>Type</th>
 //                             <th>Quantity</th>
+//                             <th>Total Price</th>
 //                             <th>Actions</th>
 //                         </tr>
 //                     </thead>
 //                     <tbody>
-//                         {items.map(item => (
+//                         {cartItems.map(item => (
 //                             <tr key={item.id}>
-//                                 <td>{item.id}</td>
-//                                 <td>{item.name}</td>
+//                                 <td>{item.itemId}</td>
+//                                 <td>{item.itemName}</td>
 //                                 <td>{item.price}</td>
-//                                 <td>{item.description}</td>
-//                                 <td>{item.type}</td>
 //                                 <td>
 //                                     <input
 //                                         type="number"
 //                                         min="1"
-//                                         value={quantities[item.id] || 1}
+//                                         value={item.qty}
 //                                         onChange={(e) => handleQuantityChange(item.id, e.target.value)}
 //                                         className="form-control"
 //                                     />
 //                                 </td>
+//                                 <td>{(item.price * item.qty).toFixed(2)}</td>
 //                                 <td>
-//                                     <button className="btn btn-success" onClick={() => addToCart(item.id)}>
-//                                         Add to Cart
+//                                     <button className="btn btn-danger" onClick={() => removeFromCart(item.id)}>
+//                                         Remove
 //                                     </button>
 //                                 </td>
 //                             </tr>
@@ -112,7 +105,7 @@
 //                     </tbody>
 //                 </table>
 //             ) : (
-//                 !error && <p>No items available.</p>
+//                 !error && <p>Your cart is empty.</p>
 //             )}
 
 //             <button className="btn btn-danger mt-4" onClick={handleLogout}>
@@ -122,62 +115,58 @@
 //     );
 // };
 
-// export default UserPage;
-
-
+// export default CartPage;
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Itemservice from '../../service/Itemservice';
-import Cartservice from '../../service/Cartservice';
+import Cartservice from '../../../service/Cartservice';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const UserPage = () => {
+const CartPage = () => {
     const navigate = useNavigate();
-    const [items, setItems] = useState([]);
+    const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [quantities, setQuantities] = useState({}); // To track quantities for each item
 
     const userId = localStorage.getItem('userId');
     const userRole = localStorage.getItem('userRole');
 
     useEffect(() => {
         if (userId && userRole === 'user') {
-            fetchItems();
+            fetchCartItems();
         } else {
             navigate('/login');
         }
     }, [userId, userRole, navigate]);
 
-    const fetchItems = async () => {
+    const fetchCartItems = async () => {
         try {
-            const response = await Itemservice.getAllItems(); 
-            setItems(response.data); 
+            const response = await Cartservice.getUserCarts(userId);
+            setCartItems(response.data);
         } catch (error) {
-            setError('Failed to load items.');
+            setError('Failed to load cart items.');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleQuantityChange = (itemId, value) => {
-        setQuantities(prevQuantities => ({
-            ...prevQuantities,
-            [itemId]: value
-        }));
+    const handleQuantityChange = async (cartId, newQuantity) => {
+        try {
+            await Cartservice.updateCart(cartId, { qty: newQuantity });
+            fetchCartItems(); // Refresh the cart items after update
+        } catch (error) {
+            console.error('Error updating cart item:', error.response ? error.response.data : error.message);
+            setError('Failed to update cart item.');
+        }
     };
 
-    const addToCart = (itemId) => {
-        const quantity = quantities[itemId] || 1; // Default to 1 if quantity is not set
-        Cartservice.addItemToCart(userId, itemId, quantity)
-            .then(() => {
-                // Navigate to CartPage after adding item to cart
-                navigate("/cart");
-            })
-            .catch((error) => {
-                console.error('Error adding item to cart:', error.response ? error.response.data : error.message);
-                setError("Failed to add item to cart.");
-            });
+    const removeFromCart = async (cartId) => {
+        try {
+            await Cartservice.deleteCart(cartId);
+            fetchCartItems(); // Refresh the cart items after deletion
+        } catch (error) {
+            console.error('Error removing item from cart:', error.response ? error.response.data : error.message);
+            setError('Failed to remove item from cart.');
+        }
     };
 
     const handleLogout = () => {
@@ -192,44 +181,39 @@ const UserPage = () => {
 
     return (
         <div className="container mt-5">
-            <h2 className="text-primary mb-4">Welcome to the User Dashboard</h2>
+            <h2 className="text-primary mb-4">Your Cart</h2>
 
             {error && <div className="alert alert-danger">{error}</div>}
 
-            <h3 className="text-secondary">Available Items</h3>
-            {items.length > 0 ? (
+            {cartItems.length > 0 ? (
                 <table className="table table-striped table-bordered">
                     <thead className="thead-dark">
                         <tr>
                             <th>Item ID</th>
-                            <th>Item Name</th>
                             <th>Price</th>
-                            <th>Description</th>
-                            <th>Type</th>
                             <th>Quantity</th>
+                            <th>Total Price</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {items.map(item => (
+                        {cartItems.map(item => (
                             <tr key={item.id}>
-                                <td>{item.id}</td>
-                                <td>{item.name}</td>
+                                <td>{item.itemid}</td> {/* Display itemid from backend response */}
                                 <td>{item.price}</td>
-                                <td>{item.description}</td>
-                                <td>{item.type}</td>
                                 <td>
                                     <input
                                         type="number"
                                         min="1"
-                                        value={quantities[item.id] || 1}
+                                        value={item.qty}
                                         onChange={(e) => handleQuantityChange(item.id, e.target.value)}
                                         className="form-control"
                                     />
                                 </td>
+                                <td>{(item.price * item.qty).toFixed(2)}</td>
                                 <td>
-                                    <button className="btn btn-success" onClick={() => addToCart(item.id)}>
-                                        Add to Cart
+                                    <button className="btn btn-danger" onClick={() => removeFromCart(item.id)}>
+                                        Remove
                                     </button>
                                 </td>
                             </tr>
@@ -237,7 +221,7 @@ const UserPage = () => {
                     </tbody>
                 </table>
             ) : (
-                !error && <p>No items available.</p>
+                !error && <p>Your cart is empty.</p>
             )}
 
             <button className="btn btn-danger mt-4" onClick={handleLogout}>
@@ -247,4 +231,6 @@ const UserPage = () => {
     );
 };
 
-export default UserPage;
+export default CartPage;
+
+

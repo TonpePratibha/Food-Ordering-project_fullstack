@@ -8,13 +8,15 @@ import UserPage from './Components/Pages/UserPage';
 import { Navigate, Route,Routes,Router } from 'react-router-dom';
 import AdminPage from './Components/Pages/AdminPage';
 import RestaurentPage from './Components/Pages/RestaurentPage';
-import ProtectedRoute from './Components/Router/ProtectedRoute'
+
 import Logout from './Components/Auth/Logout';
 import Login from './Components/Auth/Login';
-import RestaurantPage from './Components/Pages/RestaurentPage';
+
 import UpdateRestaurent from './Components/Pages/UpdateRestaurent';
 import UpdateItems from './Components/Pages/Items/UpdateItems';
 import AddItems from './Components/Pages/Items/AddItems';
+import CartPage from './Components/Pages/Cart/CartPage';
+import OrderPage from './Components/Pages/Order/OrderPage';
 
 
 function App() {
@@ -47,6 +49,8 @@ function App() {
                 <Route path='/edit-restaurant' element={<UpdateRestaurent/>}></Route>
                 <Route path='/edit-item/:id'element={<UpdateItems/>}></Route>
                 <Route path='/add-item' element={<AddItems/>}></Route>
+                <Route path='/cart' element={<CartPage/>}></Route>
+                <Route path='/order' element={<OrderPage/>}></Route>
                 
       </Routes>
      

@@ -82,6 +82,12 @@ public class cartServiceImpl implements cartService
             throw new RuntimeException("Cart not found");
         }
     }
+    public List<CartDTO> getCartItemsByUserId(Long userId) {
+        // Fetch cart items from the repository
+        List<Cart> carts = cartrepository.findByUserId(userId);
+        // Convert to DTOs if needed
+        return carts.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
 
     @Override
     public void deleteCart(Long id) {
