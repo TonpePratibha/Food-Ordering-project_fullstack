@@ -1,5 +1,4 @@
 
-
 // import React, { useEffect, useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 // import Itemservice from '../../service/Itemservice';
@@ -46,8 +45,8 @@
 //         const quantity = quantities[itemId] || 1; // Default to 1 if quantity is not set
 //         Cartservice.addItemToCart(userId, itemId, quantity)
 //             .then(() => {
-//                 // alert("Item added to cart successfully!");
-//                 navigate("/cart")
+//                 // Navigate to CartPage after adding item to cart
+//                 navigate("/cart");
 //             })
 //             .catch((error) => {
 //                 console.error('Error adding item to cart:', error.response ? error.response.data : error.message);
@@ -129,21 +128,25 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Itemservice from '../../service/Itemservice';
 import Cartservice from '../../service/Cartservice';
+import Userservice from '../../service/Userservice';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UserPage = () => {
     const navigate = useNavigate();
     const [items, setItems] = useState([]);
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [quantities, setQuantities] = useState({}); // To track quantities for each item
 
     const userId = localStorage.getItem('userId');
     const userRole = localStorage.getItem('userRole');
+    const username=localStorage.getItem('username');
 
     useEffect(() => {
         if (userId && userRole === 'user') {
             fetchItems();
+            fetchUserDetails();
         } else {
             navigate('/login');
         }
@@ -155,6 +158,18 @@ const UserPage = () => {
             setItems(response.data); 
         } catch (error) {
             setError('Failed to load items.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchUserDetails = async () => {
+        try {
+            const response = await Userservice.getUserDetails(userId);
+            setUser(response.data);
+            console.log(response.data)
+        } catch (error) {
+            setError('Failed to load user details.');
         } finally {
             setLoading(false);
         }
@@ -180,9 +195,15 @@ const UserPage = () => {
             });
     };
 
+    const handleUpdate = () => {
+        // Navigate to UpdateUserPage with current user details
+        navigate('/update-user', { state: { user } });
+    };
+
     const handleLogout = () => {
         localStorage.removeItem('userRole');
         localStorage.removeItem('userId');
+        localStorage.removeItem('username');
         navigate('/login');
     };
 
@@ -192,10 +213,44 @@ const UserPage = () => {
 
     return (
         <div className="container mt-5">
-            <h2 className="text-primary mb-4">Welcome to the User Dashboard</h2>
+            <h2 className="text-primary mb-4">Welcome to the {username} Dashboard</h2>
 
             {error && <div className="alert alert-danger">{error}</div>}
 
+            {/* User Details Section */}
+            {user && (
+                <div className="mb-4">
+                    <h3 className="text-secondary">Your Details</h3>
+                    <table className="table table-striped table-bordered">
+                        <thead className="thead-dark">
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                                <th>Mobile No</th>
+                                
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{user.username}</td>
+                                <td>{user.email}</td>
+                                <td>{user.address}</td>
+                                <td>{user.mobileno}</td>
+                                
+                                <td>
+                                    <button className="btn btn-primary" onClick={handleUpdate}>
+                                        Update
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            )}
+
+            {/* Items Section */}
             <h3 className="text-secondary">Available Items</h3>
             {items.length > 0 ? (
                 <table className="table table-striped table-bordered">
@@ -248,3 +303,5 @@ const UserPage = () => {
 };
 
 export default UserPage;
+
+

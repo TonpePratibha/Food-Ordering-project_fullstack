@@ -17,6 +17,9 @@ import UpdateItems from './Components/Pages/Items/UpdateItems';
 import AddItems from './Components/Pages/Items/AddItems';
 import CartPage from './Components/Pages/Cart/CartPage';
 import OrderPage from './Components/Pages/Order/OrderPage';
+import PaymentPage from './Components/Pages/Payment/PaymentPage';
+import PaymentSuccessPage from './Components/Pages/Payment/PaymentSuccessPage';
+import UpdateUser from './Components/Pages/UpdateUser';
 
 
 function App() {
@@ -51,6 +54,9 @@ function App() {
                 <Route path='/add-item' element={<AddItems/>}></Route>
                 <Route path='/cart' element={<CartPage/>}></Route>
                 <Route path='/order' element={<OrderPage/>}></Route>
+                <Route path='/payment' element={<PaymentPage/>}></Route>
+                <Route path='/payment-success' element={<PaymentSuccessPage/>}></Route>
+                <Route path='/update-user' element={<UpdateUser/>}></Route>
                 
       </Routes>
      

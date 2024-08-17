@@ -31,8 +31,26 @@ const loginUser = async (loginData) => {
         throw error;
     }
 };
+const getUserDetails = async (userId) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/${userId}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+const updateUser = async (userId, userDetails) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/${userId}`, userDetails);
+        return response.data;
+    } catch (error) {
+        throw new Error(`Failed to update user: ${error.response ? error.response.data : error.message}`);
+    }
+};
 
 export default{
     registerUser,
-    loginUser
+    loginUser,
+    getUserDetails,
+    updateUser
 }

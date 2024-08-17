@@ -1,129 +1,71 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Cartservice from '../../../service/Cartservice';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const CartPage = () => {
+const OrderPage = () => {
+    const location = useLocation();
     const navigate = useNavigate();
-    const [cartItems, setCartItems] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
 
-    const userId = localStorage.getItem('userId');
-    const userRole = localStorage.getItem('userRole');
+    // Retrieve cartItems from the state
+    const cartItems = location.state?.cartItems || [];
 
-    useEffect(() => {
-        if (userId && userRole === 'user') {
-            fetchCartItems();
-        } else {
-            navigate('/login');
-        }
-    }, [userId, userRole, navigate]);
-
-    const fetchCartItems = async () => {
-        try {
-            const response = await Cartservice.getUserCarts(userId);
-            console.log('Cart Items:', response.data); // Check if data is correctly fetched
-            setCartItems(response.data);
-        } catch (error) {
-            setError('Failed to load cart items.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleQuantityChange = async (cartId, newQuantity) => {
-        try {
-            await Cartservice.updateCart(cartId, { qty: newQuantity });
-            fetchCartItems(); // Refresh the cart items after update
-        } catch (error) {
-            console.error('Error updating cart item:', error.response ? error.response.data : error.message);
-            setError('Failed to update cart item.');
-        }
-    };
-
-    const removeFromCart = async (cartId) => {
-        try {
-            await Cartservice.deleteCart(cartId);
-            fetchCartItems(); // Refresh the cart items after deletion
-        } catch (error) {
-            console.error('Error removing item from cart:', error.response ? error.response.data : error.message);
-            setError('Failed to remove item from cart.');
-        }
-    };
-
-    const handleLogout = () => {
-        localStorage.removeItem('userRole');
-        localStorage.removeItem('userId');
-        navigate('/login');
-    };
-
-    const placeOrder = () => {
-        navigate('/order-page'); // Change to your actual order page route
-    };
-
-    if (loading) {
-        return <p>Loading...</p>;
+    // If cartItems is empty, redirect back to CartPage
+    if (cartItems.length === 0) {
+        navigate('/cart');
+        return null;
     }
+
+    // Calculate total quantity and total price
+    const totalQuantity = cartItems.reduce((acc, item) => acc + item.qty, 0);
+    const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+
+    const handlePayment = () => {
+        navigate('/payment', { state: { totalPrice } });
+    };
 
     return (
         <div className="container mt-5">
-            <h2 className="text-primary mb-4">Your Cart</h2>
+            <h2 className="text-primary mb-4">Order Summary</h2>
 
-            {error && <div className="alert alert-danger">{error}</div>}
+            <table className="table table-striped table-bordered">
+                <thead className="thead-dark">
+                    <tr>
+                        <th>Item ID</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {cartItems.map(item => (
+                        <tr key={item.id}>
+                            <td>{item.itemid}</td> {/* Display the itemid */}
+                            <td>{item.price}</td>
+                            <td>{item.qty}</td>
+                            <td>{(item.price * item.qty).toFixed(2)}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
 
-            {cartItems.length > 0 ? (
-                <>
-                    <table className="table table-striped table-bordered">
-                        <thead className="thead-dark">
-                            <tr>
-                                <th>Item ID</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total Price</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {cartItems.map(item => (
-                                <tr key={item.id}>
-                                    <td>{item.itemid}</td> {/* Display itemid from backend response */}
-                                    <td>{item.price}</td>
-                                    <td>
-                                        <input
-                                            type="number"
-                                            min="1"
-                                            value={item.qty}
-                                            onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                                            className="form-control"
-                                        />
-                                    </td>
-                                    <td>{(item.price * item.qty).toFixed(2)}</td>
-                                    <td>
-                                        <button className="btn btn-danger" onClick={() => removeFromCart(item.id)}>
-                                            Remove
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    {/* Display the Place Order button unconditionally */}
-                    <button className="btn btn-primary mt-4" onClick={placeOrder}>
-                        Place Order
-                    </button>
-                </>
-            ) : (
-                !error && <p>Your cart is empty.</p>
-            )}
+            <h4>Total Quantity: {totalQuantity}</h4>
+            <h4>Total Price: ₹{totalPrice.toFixed(2)}</h4>
 
-            <button className="btn btn-danger mt-4" onClick={handleLogout}>
-                Logout
+            <button className="btn btn-primary mt-4" onClick={handlePayment}>
+                Make Payment
+            </button>
+
+            <button className="btn btn-secondary mt-4 ml-2" onClick={() => navigate('/user-dashboard')}>
+                Go to Dashboard
             </button>
         </div>
     );
 };
 
-export default CartPage;
+export default OrderPage;
+
+
+
+
 
 

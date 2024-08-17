@@ -1,3 +1,6 @@
+
+
+
 // import React, { useEffect, useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 // import Cartservice from '../../../service/Cartservice';
@@ -23,6 +26,7 @@
 //     const fetchCartItems = async () => {
 //         try {
 //             const response = await Cartservice.getUserCarts(userId);
+//             console.log('Cart Items:', response.data); // Check if data is correctly fetched
 //             setCartItems(response.data);
 //         } catch (error) {
 //             setError('Failed to load cart items.');
@@ -57,6 +61,10 @@
 //         navigate('/login');
 //     };
 
+//     const placeOrder = () => {
+//         navigate('/order'); 
+//     };
+
 //     if (loading) {
 //         return <p>Loading...</p>;
 //     }
@@ -68,42 +76,46 @@
 //             {error && <div className="alert alert-danger">{error}</div>}
 
 //             {cartItems.length > 0 ? (
-//                 <table className="table table-striped table-bordered">
-//                     <thead className="thead-dark">
-//                         <tr>
-//                             <th>Item ID</th>
-//                             <th>Item Name</th>
-//                             <th>Price</th>
-//                             <th>Quantity</th>
-//                             <th>Total Price</th>
-//                             <th>Actions</th>
-//                         </tr>
-//                     </thead>
-//                     <tbody>
-//                         {cartItems.map(item => (
-//                             <tr key={item.id}>
-//                                 <td>{item.itemId}</td>
-//                                 <td>{item.itemName}</td>
-//                                 <td>{item.price}</td>
-//                                 <td>
-//                                     <input
-//                                         type="number"
-//                                         min="1"
-//                                         value={item.qty}
-//                                         onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-//                                         className="form-control"
-//                                     />
-//                                 </td>
-//                                 <td>{(item.price * item.qty).toFixed(2)}</td>
-//                                 <td>
-//                                     <button className="btn btn-danger" onClick={() => removeFromCart(item.id)}>
-//                                         Remove
-//                                     </button>
-//                                 </td>
+//                 <>
+//                     <table className="table table-striped table-bordered">
+//                         <thead className="thead-dark">
+//                             <tr>
+//                                 <th>Item ID</th>
+//                                 <th>Price</th>
+//                                 <th>Quantity</th>
+//                                 <th>Total Price</th>
+//                                 <th>Actions</th>
 //                             </tr>
-//                         ))}
-//                     </tbody>
-//                 </table>
+//                         </thead>
+//                         <tbody>
+//                             {cartItems.map(item => (
+//                                 <tr key={item.id}>
+//                                     <td>{item.itemid}</td> {/* Display itemid from backend response */}
+//                                     <td>{item.price}</td>
+//                                     <td>
+//                                         <input
+//                                             type="number"
+//                                             min="1"
+//                                             value={item.qty}
+//                                             onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+//                                             className="form-control"
+//                                         />
+//                                     </td>
+//                                     <td>{(item.price * item.qty).toFixed(2)}</td>
+//                                     <td>
+//                                         <button className="btn btn-danger" onClick={() => removeFromCart(item.id)}>
+//                                             Remove
+//                                         </button>
+//                                     </td>
+//                                 </tr>
+//                             ))}
+//                         </tbody>
+//                     </table>
+//                     {/* Display the Place Order button unconditionally */}
+//                     <button className="btn btn-primary mt-4" onClick={placeOrder}>
+//                         Place Order
+//                     </button>
+//                 </>
 //             ) : (
 //                 !error && <p>Your cart is empty.</p>
 //             )}
@@ -116,6 +128,7 @@
 // };
 
 // export default CartPage;
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cartservice from '../../../service/Cartservice';
@@ -169,6 +182,11 @@ const CartPage = () => {
         }
     };
 
+    const handlePlaceOrder = () => {
+        // Navigate to OrderPage with cartItems data
+        navigate('/order', { state: { cartItems } });
+    };
+
     const handleLogout = () => {
         localStorage.removeItem('userRole');
         localStorage.removeItem('userId');
@@ -186,40 +204,46 @@ const CartPage = () => {
             {error && <div className="alert alert-danger">{error}</div>}
 
             {cartItems.length > 0 ? (
-                <table className="table table-striped table-bordered">
-                    <thead className="thead-dark">
-                        <tr>
-                            <th>Item ID</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total Price</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {cartItems.map(item => (
-                            <tr key={item.id}>
-                                <td>{item.itemid}</td> {/* Display itemid from backend response */}
-                                <td>{item.price}</td>
-                                <td>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        value={item.qty}
-                                        onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                                        className="form-control"
-                                    />
-                                </td>
-                                <td>{(item.price * item.qty).toFixed(2)}</td>
-                                <td>
-                                    <button className="btn btn-danger" onClick={() => removeFromCart(item.id)}>
-                                        Remove
-                                    </button>
-                                </td>
+                <>
+                    <table className="table table-striped table-bordered">
+                        <thead className="thead-dark">
+                            <tr>
+                                <th>Item ID</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total Price</th>
+                                <th>Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {cartItems.map(item => (
+                                <tr key={item.id}>
+                                    <td>{item.itemid}</td> {/* Display itemid from backend response */}
+                                    <td>{item.price}</td>
+                                    <td>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            value={item.qty}
+                                            onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                                            className="form-control"
+                                        />
+                                    </td>
+                                    <td>{(item.price * item.qty).toFixed(2)}</td>
+                                    <td>
+                                        <button className="btn btn-danger" onClick={() => removeFromCart(item.id)}>
+                                            Remove
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    <button className="btn btn-primary mt-4" onClick={handlePlaceOrder}>
+                        Place Order
+                    </button>
+                </>
             ) : (
                 !error && <p>Your cart is empty.</p>
             )}

@@ -71,7 +71,7 @@ const NavBar = () => {
                                 >
                                     <MenuItem value="user">User</MenuItem>
                                     <MenuItem value="restaurant">Restaurant</MenuItem>
-                                    <MenuItem value="admin">Admin</MenuItem>
+                                    
                                 </Select>
                             </FormControl>
                         </Box>
